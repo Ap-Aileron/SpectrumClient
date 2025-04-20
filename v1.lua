@@ -563,6 +563,187 @@ createToggle("Derp", function(state, derpSpeed)
     end
 end, true)
 
+local espConnection = nil
+local charAddedConnections = {}
+local espGuiMap = {}
+
+function createUIESP(player)
+    if player == game.Players.LocalPlayer then return end
+
+    local function attachESPToCharacter(character)
+        local hrp = character:FindFirstChild("HumanoidRootPart")
+        if not hrp then return end
+
+        local billboard = Instance.new("BillboardGui")
+        billboard.Name = "ESP_GUI"
+        billboard.Adornee = hrp
+        billboard.AlwaysOnTop = true
+        billboard.Size = UDim2.new(4, 0, 6, 0)
+        billboard.StudsOffset = Vector3.new(0, 3, 0)
+        billboard.Parent = hrp
+
+        -- Box Frame
+        local box = Instance.new("Frame")
+        box.Size = UDim2.new(1, 0, 1, 0)
+        box.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+        box.BackgroundTransparency = 0.6
+        box.BorderSizePixel = 1
+        box.BorderColor3 = Color3.new(1, 1, 1)
+        box.Parent = billboard
+        
+        
+
+        -- Name label
+        local nameLabel = Instance.new("TextLabel")
+        nameLabel.Size = UDim2.new(1, 0, 0.2, 0)
+        nameLabel.Position = UDim2.new(0, 0, -0.2, 0)
+        nameLabel.BackgroundTransparency = 1
+        nameLabel.Text = player.Name
+        nameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+        nameLabel.TextStrokeTransparency = 0.5
+        nameLabel.TextScaled = true
+        nameLabel.Font = Enum.Font.SourceSansBold
+        nameLabel.Parent = billboard
+
+        espGuiMap[player] = billboard
+    end
+
+    -- Handle existing characters
+    if player.Character then
+        attachESPToCharacter(player.Character)
+    end
+
+    -- Listen for character respawns
+    charAddedConnections[player] = player.CharacterAdded:Connect(function(char)
+        task.wait(1)
+        attachESPToCharacter(char)
+    end)
+end
+
+function removeUIESP()
+    for _, gui in pairs(espGuiMap) do
+        if gui and gui.Parent then
+            gui:Destroy()
+        end
+    end
+    espGuiMap = {}
+
+    for _, conn in pairs(charAddedConnections) do
+        if conn then conn:Disconnect() end
+    end
+    charAddedConnections = {}
+
+    if espConnection then
+        espConnection:Disconnect()
+        espConnection = nil
+    end
+end
+
+createToggle("ESP", function(state)
+    if state then
+        for _, player in ipairs(game.Players:GetPlayers()) do
+            createUIESP(player)
+        end
+
+        espConnection = game.Players.PlayerAdded:Connect(function(player)
+            createUIESP(player)
+        end)
+    else
+        removeUIESP()
+    end
+end)
+
+
+local aimbotRunning = false
+local runService = game:GetService("RunService")
+local userInputService = game:GetService("UserInputService")
+local localPlayer = game.Players.LocalPlayer
+local camera = workspace.CurrentCamera
+
+local rightMouseHeld = false
+
+-- CONFIG
+local FOV_RADIUS = 150
+local SMOOTHNESS = 0.2
+
+-- Input check for RMB
+userInputService.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton2 then
+        rightMouseHeld = true
+    end
+end)
+
+userInputService.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton2 then
+        rightMouseHeld = false
+    end
+end)
+
+-- Get closest valid target
+local function getClosestTarget()
+    local closest = nil
+    local shortestDist = math.huge
+
+    for _, player in pairs(game.Players:GetPlayers()) do
+        if player ~= localPlayer then
+            local character = player.Character
+            if character and character:FindFirstChild("HumanoidRootPart") then
+                local hrp = character.HumanoidRootPart
+                local screenPoint, onScreen = camera:WorldToViewportPoint(hrp.Position)
+
+                if onScreen then
+                    local dist = (Vector2.new(screenPoint.X, screenPoint.Y) - Vector2.new(camera.ViewportSize.X/2, camera.ViewportSize.Y/2)).Magnitude
+                    if dist < shortestDist and dist < FOV_RADIUS then
+                        closest = hrp
+                        shortestDist = dist
+                    end
+                end
+            end
+        end
+    end
+
+    return closest
+end
+
+-- Smooth aiming
+local function aimAt(target)
+    local camPos = camera.CFrame.Position
+    local dir = (target.Position - camPos).Unit
+    local goalCFrame = CFrame.new(camPos, camPos + dir)
+
+    camera.CFrame = camera.CFrame:Lerp(goalCFrame, SMOOTHNESS)
+end
+
+-- Aimbot loop
+local function startAimbot()
+    aimbotRunning = true
+    runService:BindToRenderStep("Aimbot", Enum.RenderPriority.Camera.Value + 1, function()
+        if rightMouseHeld then
+            local target = getClosestTarget()
+            if target then
+                aimAt(target)
+            end
+        end
+    end)
+end
+
+local function stopAimbot()
+    aimbotRunning = false
+    runService:UnbindFromRenderStep("Aimbot")
+end
+
+-- Toggle hook
+createToggle("Aimbot", function(state)
+    if state then
+        startAimbot()
+    else
+        stopAimbot()
+    end
+end)
+
+
+
+
 
 
 
