@@ -2,6 +2,12 @@ local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 print("Player Defined")
 
+if player.PlayerGui:FindFirstChild("main") then 
+	player.PlayerGui.main:Destroy()
+	print("Destroyed old version")
+else 
+    print("No old version found")
+end
 
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "main"
