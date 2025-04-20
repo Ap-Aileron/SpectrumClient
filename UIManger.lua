@@ -49,6 +49,87 @@ local uiCorner = Instance.new("UICorner")
 uiCorner.CornerRadius = UDim.new(0, 12)
 uiCorner.Parent = mainFrame
 
+-- Title Bar
+local titleBar = Instance.new("Frame")
+titleBar.Size = UDim2.new(1, 0, 0, 40)
+titleBar.Position = UDim2.new(0, 0, 0, 0)
+titleBar.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+titleBar.BorderSizePixel = 0
+titleBar.Parent = mainFrame
+print("TitleBar Defined")
+
+-- Title Text
+local titleText = Instance.new("TextLabel")
+titleText.Size = UDim2.new(1, -100, 1, 0)
+titleText.Position = UDim2.new(0, 10, 0, 0)
+titleText.BackgroundTransparency = 1
+titleText.Text = "Spectrum Client"
+titleText.TextColor3 = Color3.new(1, 1, 1)
+titleText.TextSize = 18
+titleText.Font = Enum.Font.GothamBold
+titleText.TextXAlignment = Enum.TextXAlignment.Left
+titleText.Parent = titleBar
+print("TitleText Defined")
+
+-- Close Button
+local closeButton = Instance.new("TextButton")
+closeButton.Size = UDim2.new(0, 40, 0, 40)
+closeButton.Position = UDim2.new(1, -40, 0, 0)
+closeButton.BackgroundColor3 = Color3.fromRGB(255, 80, 80)
+closeButton.Text = "×"
+closeButton.TextColor3 = Color3.new(1, 1, 1)
+closeButton.TextSize = 24
+closeButton.Font = Enum.Font.GothamSemibold
+closeButton.BorderSizePixel = 0
+closeButton.Parent = titleBar
+print("CloseButton Defined")
+
+-- Minimize Button
+local minimizeButton = Instance.new("TextButton")
+minimizeButton.Size = UDim2.new(0, 40, 0, 40)
+minimizeButton.Position = UDim2.new(1, -80, 0, 0)
+minimizeButton.BackgroundColor3 = Color3.fromRGB(80, 80, 255)
+minimizeButton.Text = "−"
+minimizeButton.TextColor3 = Color3.new(1, 1, 1)
+minimizeButton.TextSize = 24
+minimizeButton.Font = Enum.Font.GothamSemibold
+minimizeButton.BorderSizePixel = 0
+minimizeButton.Parent = titleBar
+print("MinimizeButton Defined")
+
+-- Content Frame
+local contentFrame = Instance.new("Frame")
+contentFrame.Size = UDim2.new(1, -20, 1, -60)
+contentFrame.Position = UDim2.new(0, 10, 0, 50)
+contentFrame.BackgroundTransparency = 1
+contentFrame.Parent = mainFrame
+print("ContentFrame Defined")
+
+-- Add watermark
+local watermark = Instance.new("TextLabel")
+watermark.Size = UDim2.new(1, 0, 0, 20)
+watermark.Position = UDim2.new(0, 0, 1, -20)
+watermark.BackgroundTransparency = 1
+watermark.Text = "Made by Ap-Aileron"
+watermark.TextColor3 = Color3.new(1, 1, 1)
+watermark.TextSize = 14
+watermark.Font = Enum.Font.Gotham
+watermark.TextXAlignment = Enum.TextXAlignment.Center
+watermark.Parent = mainFrame
+print("watermark Defined")
+
+-- Layout for content frame
+local layout = Instance.new("UIListLayout")
+layout.Padding = UDim.new(0, 10)
+layout.Parent = contentFrame
+print("Layout Defined")
+
+-- Padding for content frame
+local padding = Instance.new("UIPadding")
+padding.PaddingTop = UDim.new(0, 10)
+padding.Parent = contentFrame
+print("Padding Defined")
+
 -- Shadow effect (optional)
 local shadow = Instance.new("ImageLabel")
 shadow.Size = UDim2.new(1, 40, 1, 40)
