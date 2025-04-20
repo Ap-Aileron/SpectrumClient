@@ -1,10 +1,13 @@
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
+print("Player Defined")
+
 
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "main"
 screenGui.ResetOnSpawn = false
 screenGui.Parent = player:WaitForChild("PlayerGui")
+print("ScreenGui Defined")
 
 -- Main Frame
 local mainFrame = Instance.new("ScrollingFrame")
@@ -16,6 +19,7 @@ mainFrame.BorderSizePixel = 0
 mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 mainFrame.Active = true
 mainFrame.Parent = screenGui
+prrint("MainFrame Defined")
 
 -- Dynamic scaling
 local function updateSize()
@@ -28,9 +32,11 @@ local function updateSize()
     mainFrame.Size = UDim2.new(0, baseSize.X * scale, 0, baseSize.Y * scale)
 end
 
+
 -- Connect to viewport size change
 workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(updateSize)
 updateSize() -- Initialize size
+print("Size Updated")
 
 -- Apply rounded corners
 local uiCorner = Instance.new("UICorner")
@@ -56,6 +62,7 @@ titleBar.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 titleBar.BorderSizePixel = 0
 titleBar.Name = "TitleBar"
 titleBar.Parent = mainFrame
+print("TitleBar Defined")
 
 local titleCorner = Instance.new("UICorner")
 titleCorner.CornerRadius = UDim.new(0, 12)
@@ -72,6 +79,7 @@ titleText.Font = Enum.Font.GothamBold
 titleText.TextSize = 18
 titleText.TextXAlignment = Enum.TextXAlignment.Left
 titleText.Parent = titleBar
+print("TitleText Defined")
 
 -- Close Button
 local closeButton = Instance.new("TextButton")
@@ -88,6 +96,8 @@ local closeCorner = Instance.new("UICorner")
 closeCorner.CornerRadius = UDim.new(1, 0)
 closeCorner.Parent = closeButton
 
+print("CloseButton Defined")
+
 -- Minimize Button
 local minimizeButton = Instance.new("TextButton")
 minimizeButton.Size = UDim2.new(0, 30, 0, 30)
@@ -102,6 +112,7 @@ minimizeButton.Parent = titleBar
 local minimizeCorner = Instance.new("UICorner")
 minimizeCorner.CornerRadius = UDim.new(1, 0)
 minimizeCorner.Parent = minimizeButton
+print("MinimizeButton Defined")
 
 -- Content Frame
 local contentFrame = Instance.new("Frame")
@@ -110,6 +121,7 @@ contentFrame.Position = UDim2.new(0, 0, 0, 40)
 contentFrame.BackgroundTransparency = 1
 contentFrame.ClipsDescendants = true
 contentFrame.Parent = mainFrame
+print("ContentFrame Defined")
 
 -- Watermark
 local watermark = Instance.new("TextLabel")
@@ -122,6 +134,7 @@ watermark.Font = Enum.Font.Gotham
 watermark.TextSize = 14
 watermark.TextXAlignment = Enum.TextXAlignment.Left
 watermark.Parent = contentFrame
+print("watermark Defined")
 
 -- Layout for content
 local layout = Instance.new("UIListLayout")
@@ -129,6 +142,7 @@ layout.Padding = UDim.new(0, 15)
 layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 layout.SortOrder = Enum.SortOrder.LayoutOrder
 layout.Parent = contentFrame
+print("Layout Defined")
 
 local padding = Instance.new("UIPadding")
 padding.PaddingTop = UDim.new(0, 15)
@@ -136,3 +150,4 @@ padding.PaddingLeft = UDim.new(0, 20)
 padding.PaddingRight = UDim.new(0, 20)
 padding.PaddingBottom = UDim.new(0, 35) -- Make room for watermark
 padding.Parent = contentFrame
+print("Padding Defined")
