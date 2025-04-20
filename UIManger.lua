@@ -212,3 +212,158 @@ end
 
 setupButtonHover(closeButton, Color3.fromRGB(255, 80, 80), Color3.fromRGB(255, 50, 50))
 setupButtonHover(minimizeButton, Color3.fromRGB(80, 80, 255), Color3.fromRGB(50, 50, 255))
+
+local function createToggle(name, callback, hasOptions)
+	local container = Instance.new("Frame")
+	container.Size = UDim2.new(1, 0, 0, hasOptions and 120 or 50)
+	container.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+	container.BackgroundTransparency = 0.2
+	container.ClipsDescendants = true
+	container.Parent = contentFrame
+	
+	local containerCorner = Instance.new("UICorner")
+	containerCorner.CornerRadius = UDim.new(0, 8)
+	containerCorner.Parent = container
+	
+	local toggleButton = Instance.new("TextButton")
+	toggleButton.Size = UDim2.new(1, 0, 0, 50)
+	toggleButton.BackgroundTransparency = 1
+	toggleButton.Text = ""
+	toggleButton.Parent = container
+	
+	local toggleLabel = Instance.new("TextLabel")
+	toggleLabel.Size = UDim2.new(0.7, 0, 1, 0)
+	toggleLabel.BackgroundTransparency = 1
+	toggleLabel.Text = name
+	toggleLabel.TextColor3 = Color3.new(1, 1, 1)
+	toggleLabel.Font = Enum.Font.GothamSemibold
+	toggleLabel.TextSize = 18
+	toggleLabel.TextXAlignment = Enum.TextXAlignment.Left
+	toggleLabel.Position = UDim2.new(0, 15, 0, 0)
+	toggleLabel.Parent = toggleButton
+	
+	-- Toggle switch visual
+	local switchOuter = Instance.new("Frame")
+	switchOuter.Size = UDim2.new(0, 50, 0, 26)
+	switchOuter.Position = UDim2.new(1, -65, 0.5, -13)
+	switchOuter.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+	switchOuter.BorderSizePixel = 0
+	switchOuter.Parent = toggleButton
+	
+	local switchCorner = Instance.new("UICorner")
+	switchCorner.CornerRadius = UDim.new(1, 0)
+	switchCorner.Parent = switchOuter
+	
+	local switchInner = Instance.new("Frame")
+	switchInner.Size = UDim2.new(0, 20, 0, 20)
+	switchInner.Position = UDim2.new(0, 3, 0.5, -10)
+	switchInner.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
+	switchInner.BorderSizePixel = 0
+	switchInner.Parent = switchOuter
+	
+	local switchInnerCorner = Instance.new("UICorner")
+	switchInnerCorner.CornerRadius = UDim.new(1, 0)
+	switchInnerCorner.Parent = switchInner
+	
+	local statusLabel = Instance.new("TextLabel")
+	statusLabel.Size = UDim2.new(0, 40, 0, 20)
+	statusLabel.Position = UDim2.new(1, -110, 0.5, -10)
+	statusLabel.BackgroundTransparency = 1
+	statusLabel.Text = "OFF"
+	statusLabel.TextColor3 = Color3.fromRGB(200, 60, 60)
+	statusLabel.Font = Enum.Font.GothamBold
+	statusLabel.TextSize = 16
+	statusLabel.Parent = toggleButton
+	
+	local toggled = false
+	local optionsFrame
+	local speedValue = 60 -- Default speed value
+	
+	if hasOptions then
+		optionsFrame = Instance.new("Frame")
+		optionsFrame.Size = UDim2.new(1, -20, 0, 60)
+		optionsFrame.Position = UDim2.new(0, 10, 0, 50)
+		optionsFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+		optionsFrame.BorderSizePixel = 0
+		optionsFrame.Visible = false
+		optionsFrame.Parent = container
+		
+		local optionsCorner = Instance.new("UICorner")
+		optionsCorner.CornerRadius = UDim.new(0, 8)
+		optionsCorner.Parent = optionsFrame
+
+		
+	end
+	
+	toggleButton.MouseButton1Click:Connect(function()
+		toggled = not toggled
+		statusLabel.Text = toggled and "ON" or "OFF"
+		statusLabel.TextColor3 = toggled and Color3.fromRGB(60, 200, 60) or Color3.fromRGB(200, 60, 60)
+		
+		-- Animate toggle switch
+		local switchInnerPosition = toggled and UDim2.new(1, -23, 0.5, -10) or UDim2.new(0, 3, 0.5, -10)
+		local switchOuterColor = toggled and Color3.fromRGB(0, 170, 255) or Color3.fromRGB(60, 60, 60)
+		
+		TweenService:Create(switchInner, TweenInfo.new(0.2, Enum.EasingStyle.Quad), {
+			Position = switchInnerPosition
+		}):Play()
+		
+		TweenService:Create(switchOuter, TweenInfo.new(0.2), {
+			BackgroundColor3 = switchOuterColor
+		}):Play()
+		
+		if hasOptions then
+			-- Animate container expansion/collapse
+			local targetSize = toggled and UDim2.new(1, 0, 0, 120) or UDim2.new(1, 0, 0, 50)
+			TweenService:Create(container, TweenInfo.new(0.3, Enum.EasingStyle.Quad), {
+				Size = targetSize
+			}):Play()
+			
+			-- Show options frame with a slight delay for smooth animation
+			if toggled then
+				delay(0.1, function()
+					optionsFrame.Visible = true
+					TweenService:Create(optionsFrame, TweenInfo.new(0.2), {
+						BackgroundTransparency = 0
+					}):Play()
+				end)
+			else
+				TweenService:Create(optionsFrame, TweenInfo.new(0.2), {
+					BackgroundTransparency = 1
+				}):Play()
+				delay(0.2, function()
+					optionsFrame.Visible = false
+				end)
+			end
+			
+			callback(toggled, speedValue)
+		else
+			callback(toggled)
+		end
+	end)
+	
+	-- Hover effect for button
+	toggleButton.MouseEnter:Connect(function()
+		TweenService:Create(container, TweenInfo.new(0.2), {
+			BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+		}):Play()
+	end)
+	
+	toggleButton.MouseLeave:Connect(function()
+		TweenService:Create(container, TweenInfo.new(0.2), {
+			BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+		}):Play()
+	end)
+	
+	return {
+		Container = container,
+		Toggle = toggleButton,
+		OptionsFrame = optionsFrame,
+		IsToggled = function() return toggled end,
+		SetToggled = function(state) 
+			if toggled ~= state then
+				toggleButton.MouseButton1Click:Fire()
+			end
+		end
+	}
+end
