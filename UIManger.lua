@@ -14,12 +14,12 @@ local mainFrame = Instance.new("ScrollingFrame")
 mainFrame.ScrollBarThickness = 0
 mainFrame.Size = UDim2.new(0, 300, 0, 300)
 mainFrame.Position = UDim2.new(0.5, -150, 0.5, -150)
---mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 mainFrame.BorderSizePixel = 0
 mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 mainFrame.Active = true
 mainFrame.Parent = screenGui
-prrint("MainFrame Defined")
+print("MainFrame Defined")
 
 -- Dynamic scaling
 local function updateSize()
