@@ -238,39 +238,3 @@ padding.PaddingRight = UDim.new(0, 20)
 padding.PaddingBottom = UDim.new(0, 35) -- Make room for watermark
 padding.Parent = contentFrame
 print("Padding Defined")
-
-local UserInputService = game:GetService("UserInputService")
--- Dragging functionality
-local dragging = false
-local dragStart = Vector2.new()
-local startPos = UDim2.new()
-
-titleBar.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragging = true
-        dragStart = Vector2.new(input.Position.X, input.Position.Y)
-        startPos = mainFrame.Position
-    end
-end)
-
-UserInputService.InputChanged:Connect(function(input)
-    if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-        local delta = Vector2.new(input.Position.X, input.Position.Y) - dragStart
-        local newPosition = UDim2.new(
-            startPos.X.Scale,
-            startPos.X.Offset + delta.X,
-            startPos.Y.Scale,
-            startPos.Y.Offset + delta.Y
-        )
-        mainFrame.Position = newPosition
-    end
-end)
-
-UserInputService.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragging = false
-    end
-end)
-print("Size Updated")
-print("Layout Defined")
-print("Padding Defined")
