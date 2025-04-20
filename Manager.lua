@@ -1,9 +1,18 @@
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Ap-Aileron/SpectrumClient/refs/heads/main/UIManger.lua"))();
+
 -- FUNCTIONS SECTION {
 
-local Module = require(game:GetService("Players").LocalPlayer.PlayerScripts.ModuleFunctions)
-local clickGui = script.Parent.ClickGUI
 local player = game:GetService("Players").LocalPlayer
+local clickGui = script.Parent.ClickGUI
 
+-- Create Module table to store all functions and events
+local Module = {
+	Events = {}
+}
+
+-- FUNCTIONS SECTION 
+
+-- Check if a module has rounded corners
 local function isRounded(name, header)
 	local module = player.PlayerGui.main.ClickGUI:FindFirstChild(header).ModuleFrame.Modules:FindFirstChild(name)
 	if module:FindFirstChildWhichIsA("Frame") then
@@ -13,6 +22,7 @@ local function isRounded(name, header)
 	end
 end
 
+-- Connect click event to a module
 local function connectClickEvent(moduleName, moduleFrame, header)
 	moduleFrame.title.MouseButton1Click:Connect(function()
 		print(moduleName .. " was clicked!")
@@ -42,7 +52,8 @@ local function connectClickEvent(moduleName, moduleFrame, header)
 	print("Click event connected for module: " .. moduleName)
 end
 
-local function Add(name, location, header, rounded)
+-- Add a module to the GUI
+function Module.Add(name, location, header, rounded)
 	print("Module.Add() Has been called...")
 	print("    Module Location Set To: ".. location)
 	print("    Module Header Set To: ".. (header or "None"))
@@ -100,7 +111,8 @@ local function Add(name, location, header, rounded)
 	return module
 end
 
-function Remove(name, location, header)
+-- Remove a module from the GUI
+function Module.Remove(name, location, header)
 	print("Module.Remove() Has Been Called...")
 	print("    Name Of Module To Remove: ".. name)
 	print("    Location Of Module: ".. location)
@@ -136,7 +148,8 @@ function Remove(name, location, header)
 	end
 end
 
-function Enable(name, header)
+-- Enable a module in the GUI
+function Module.Enable(name, header)
 	print("Module.Enable() Has Been Called...")
 	print("    Name Of Module To Enable: ".. name)
 
@@ -158,7 +171,8 @@ function Enable(name, header)
 	end
 end
 
-function Disable(name, header)
+-- Disable a module in the GUI
+function Module.Disable(name, header)
 	print("Module.Disable() Has Been Called...")
 	print("    Name Of Module To Disable: ".. name)
 
@@ -180,7 +194,8 @@ function Disable(name, header)
 	end
 end
 
-function OnToggle(moduleName, callback)
+-- Register a callback function for when a module is toggled
+function Module.OnToggle(moduleName, callback)
 	if type(callback) == "function" then
 		Module.Events[moduleName] = callback
 		print("Registered click callback for module: " .. moduleName)
@@ -189,67 +204,37 @@ function OnToggle(moduleName, callback)
 	end
 end
 
+-- Initialize the modules
+Module.Add("Aura", "clickgui", "Combat", false)
+Module.Disable("Aura", "Combat")
 
+Module.Add("Aimbot", "clickgui", "Combat", false)
+Module.Disable("Aimbot", "Combat")
 
+Module.Add("Reach", "clickgui", "Combat", true)
+Module.Disable("Reach", "Combat")
 
+Module.Add("Speed", "clickgui", "Player", false)
+Module.Disable("Speed", "Player")
 
+Module.Add("Flight", "clickgui", "Player", true)
+Module.Disable("Flight", "Player")
 
+Module.Add("ClickGUI", "clickgui", "Visual", true)
+Module.Disable("ClickGUI", "Visual")
 
-
-
---          }
-
-
-
-
-
-
-
-
-
-
-
-
-
-Add("Aura", "clickgui", "Combat", false)
-Disable("Aura", "Combat")
-
-Add("Aimbot", "clickgui", "Combat", false)
-Disable("Aimbot", "Combat")
-
-Add("Reach", "clickgui", "Combat", true)
-Disable("Reach", "Combat")
-
-Add("Speed", "clickgui", "Player", false)
-Disable("Speed", "Player")
-
-Add("Flight", "clickgui", "Player", true)
-Disable("Flight", "Player")
-
-Add("ClickGUI", "clickgui", "Visual", true)
-Disable("ClickGUI", "Visual")
-
-
-script.Parent.ClickGUIButton.MouseButton1Click:Connect(function()
-	if clickGui.Visible == true  then
-		Disable("ClickGUI", "Visual")
-		clickGui.Visible = false
-		Remove("ClickGUI", "arraylist")
+-- Example of how to register a module toggle callback
+-- Uncomment to use:
+--[[
+Module.OnToggle("Aura", function(isEnabled)
+	if isEnabled then
+		print("Aura has been enabled! Add your custom functionality here.")
 	else
-		Enable("ClickGUI", "Visual")
-		clickGui.Visible = true
-		Add("ClickGUI", "arraylist")
+		print("Aura has been disabled! Revert any changes here.")
 	end
-	
 end)
+--]]
 
---Module.OnToggle("Aura", function(isEnabled)
---	if isEnabled then
---		print("Aura has been enabled! Add your custom functionality here.")
---
---	else
---		print("Aura has been disabled! Revert any changes here.")
---
---	end
---end)
+-- Return the Module table to use in other scripts if needed
+return Module
 
