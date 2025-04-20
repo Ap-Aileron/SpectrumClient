@@ -1,3 +1,12 @@
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+
+local player = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "main"
 screenGui.ResetOnSpawn = false
