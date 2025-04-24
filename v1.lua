@@ -7,19 +7,16 @@ local player = Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 local humanoid = character:WaitForChild("Humanoid")
 
--- Detect Old Version
 if player.PlayerGui:FindFirstChild("main") then 
 	player.PlayerGui.main:Destroy()
 	print("Destroyed old version")
 end
 
--- Creating New Version
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "main"
 screenGui.ResetOnSpawn = false
 screenGui.Parent = player:WaitForChild("PlayerGui")
 
--- Main Frame
 local mainFrame = Instance.new("ScrollingFrame")
 mainFrame.ScrollBarThickness = 0
 mainFrame.Size = UDim2.new(0, 300, 0, 300)
@@ -30,39 +27,33 @@ mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 mainFrame.Active = true
 mainFrame.Parent = screenGui
 
--- Dynamic scaling
 local function updateSize()
     local viewportSize = workspace.CurrentCamera.ViewportSize
     local scale = math.min(viewportSize.X, viewportSize.Y) / 1080
-    scale = math.clamp(scale, 0.5, 10) -- Limit scaling between 0.5x and 1.2x
+    scale = math.clamp(scale, 0.5, 10) 
     
-    -- Apply scale to frame
     local baseSize = Vector2.new(300, 300)
     mainFrame.Size = UDim2.new(0, baseSize.X * scale, 0, baseSize.Y * scale)
 end
 
--- Connect to viewport size change
 workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(updateSize)
-updateSize() -- Initialize size
+updateSize() 
 
--- Apply rounded corners
 local uiCorner = Instance.new("UICorner")
 uiCorner.CornerRadius = UDim.new(0, 12)
 uiCorner.Parent = mainFrame
 
--- Shadow effect (optional)
 local shadow = Instance.new("ImageLabel")
 shadow.Size = UDim2.new(1, 40, 1, 40)
 shadow.Position = UDim2.new(0.5, 0, 0.5, 0)
 shadow.AnchorPoint = Vector2.new(0.5, 0.5)
 shadow.BackgroundTransparency = 1
-shadow.Image = "rbxassetid://5028857084" -- Shadow asset
+shadow.Image = "rbxassetid://5028857084" 
 shadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
 shadow.ImageTransparency = 0.6
 shadow.ZIndex = -1
 shadow.Parent = mainFrame
 
--- Title Bar
 local titleBar = Instance.new("Frame")
 titleBar.Size = UDim2.new(1, 0, 0, 40)
 titleBar.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
@@ -74,7 +65,6 @@ local titleCorner = Instance.new("UICorner")
 titleCorner.CornerRadius = UDim.new(0, 12)
 titleCorner.Parent = titleBar
 
--- Title Text
 local titleText = Instance.new("TextLabel")
 titleText.Size = UDim2.new(0.7, 0, 1, 0)
 titleText.Position = UDim2.new(0, 15, 0, 0)
@@ -86,7 +76,6 @@ titleText.TextSize = 18
 titleText.TextXAlignment = Enum.TextXAlignment.Left
 titleText.Parent = titleBar
 
--- Close Button
 local closeButton = Instance.new("TextButton")
 closeButton.Size = UDim2.new(0, 30, 0, 30)
 closeButton.Position = UDim2.new(1, -35, 0, 5)
@@ -101,7 +90,6 @@ local closeCorner = Instance.new("UICorner")
 closeCorner.CornerRadius = UDim.new(1, 0)
 closeCorner.Parent = closeButton
 
--- Minimize Button
 local minimizeButton = Instance.new("TextButton")
 minimizeButton.Size = UDim2.new(0, 30, 0, 30)
 minimizeButton.Position = UDim2.new(1, -70, 0, 5)
@@ -116,7 +104,6 @@ local minimizeCorner = Instance.new("UICorner")
 minimizeCorner.CornerRadius = UDim.new(1, 0)
 minimizeCorner.Parent = minimizeButton
 
--- Content Frame
 local contentFrame = Instance.new("Frame")
 contentFrame.Size = UDim2.new(1, 0, 1, -40)
 contentFrame.Position = UDim2.new(0, 0, 0, 40)
@@ -124,7 +111,6 @@ contentFrame.BackgroundTransparency = 1
 contentFrame.ClipsDescendants = true
 contentFrame.Parent = mainFrame
 
--- Watermark
 local watermark = Instance.new("TextLabel")
 watermark.Size = UDim2.new(0, 150, 0, 20)
 watermark.Position = UDim2.new(0, 10, 1, -25)
@@ -136,7 +122,6 @@ watermark.TextSize = 14
 watermark.TextXAlignment = Enum.TextXAlignment.Left
 watermark.Parent = contentFrame
 
--- Layout for content
 local layout = Instance.new("UIListLayout")
 layout.Padding = UDim.new(0, 15)
 layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
@@ -147,10 +132,9 @@ local padding = Instance.new("UIPadding")
 padding.PaddingTop = UDim.new(0, 15)
 padding.PaddingLeft = UDim.new(0, 20)
 padding.PaddingRight = UDim.new(0, 20)
-padding.PaddingBottom = UDim.new(0, 35) -- Make room for watermark
+padding.PaddingBottom = UDim.new(0, 35) 
 padding.Parent = contentFrame
 
--- Draggable functionality
 local dragging = false
 local dragOffset
 
@@ -173,7 +157,6 @@ UserInputService.InputEnded:Connect(function(input)
 	end
 end)
 
--- Minimize/Maximize functionality
 local isMinimized = false
 local originalSize = mainFrame.Size
 local minimizedSize = UDim2.new(0, mainFrame.Size.X.Offset, 0, 40)
@@ -191,16 +174,13 @@ minimizeButton.MouseButton1Click:Connect(function()
 	contentFrame.Visible = not isMinimized
 	minimizeButton.Text = isMinimized and "+" or "−"
 	
-	-- Animate the minimization
 	TweenService:Create(mainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
 		Size = targetSize,
 		Position = targetPos
 	}):Play()
 end)
 
--- Close functionality
 closeButton.MouseButton1Click:Connect(function()
-	-- Animate fade out
 	local fadeTween = TweenService:Create(mainFrame, TweenInfo.new(0.3), {
 		BackgroundTransparency = 1
 	})
@@ -210,13 +190,11 @@ closeButton.MouseButton1Click:Connect(function()
 		screenGui:Destroy()
 	end)
 	
-	-- Fade out shadow too
 	TweenService:Create(shadow, TweenInfo.new(0.3), {
 		ImageTransparency = 1
 	}):Play()
 end)
 
--- Hover animations for buttons
 local function setupButtonHover(button, baseColor, hoverColor)
 	button.MouseEnter:Connect(function()
 		TweenService:Create(button, TweenInfo.new(0.2), {BackgroundColor3 = hoverColor}):Play()
@@ -230,7 +208,6 @@ end
 setupButtonHover(closeButton, Color3.fromRGB(255, 80, 80), Color3.fromRGB(255, 50, 50))
 setupButtonHover(minimizeButton, Color3.fromRGB(80, 80, 255), Color3.fromRGB(50, 50, 255))
 
--- Toggle creation function with improved visuals
 local function createToggle(name, callback, hasOptions)
 	local container = Instance.new("Frame")
 	container.Size = UDim2.new(1, 0, 0, hasOptions and 120 or 50)
@@ -260,7 +237,6 @@ local function createToggle(name, callback, hasOptions)
 	toggleLabel.Position = UDim2.new(0, 15, 0, 0)
 	toggleLabel.Parent = toggleButton
 	
-	-- Toggle switch visual
 	local switchOuter = Instance.new("Frame")
 	switchOuter.Size = UDim2.new(0, 50, 0, 26)
 	switchOuter.Position = UDim2.new(1, -65, 0.5, -13)
@@ -296,7 +272,7 @@ local function createToggle(name, callback, hasOptions)
 	local toggled = false
 	local optionsFrame
 	local sliderFill, sliderLabel, sliderKnob
-	local speedValue = 60 -- Default speed value
+	local speedValue = 60 
 	
 	if hasOptions then
 		optionsFrame = Instance.new("Frame")
@@ -343,7 +319,6 @@ local function createToggle(name, callback, hasOptions)
 		sliderFillCorner.CornerRadius = UDim.new(1, 0)
 		sliderFillCorner.Parent = sliderFill
 		
-		-- Add knob to slider
 		sliderKnob = Instance.new("Frame")
 		sliderKnob.Size = UDim2.new(0, 16, 0, 16)
 		sliderKnob.Position = UDim2.new(0.5, -8, 0.5, -8)
@@ -366,7 +341,6 @@ local function createToggle(name, callback, hasOptions)
 			speedValue = math.floor(minSpeed + (maxSpeed - minSpeed) * relX)
 			sliderLabel.Text = "Speed: " .. speedValue
 			
-			-- Always update value immediately
 			if toggled then 
 				callback(true, speedValue) 
 			end
@@ -397,7 +371,6 @@ local function createToggle(name, callback, hasOptions)
 		statusLabel.Text = toggled and "ON" or "OFF"
 		statusLabel.TextColor3 = toggled and Color3.fromRGB(60, 200, 60) or Color3.fromRGB(200, 60, 60)
 		
-		-- Animate toggle switch
 		local switchInnerPosition = toggled and UDim2.new(1, -23, 0.5, -10) or UDim2.new(0, 3, 0.5, -10)
 		local switchOuterColor = toggled and Color3.fromRGB(0, 170, 255) or Color3.fromRGB(60, 60, 60)
 		
@@ -410,13 +383,11 @@ local function createToggle(name, callback, hasOptions)
 		}):Play()
 		
 		if hasOptions then
-			-- Animate container expansion/collapse
 			local targetSize = toggled and UDim2.new(1, 0, 0, 120) or UDim2.new(1, 0, 0, 50)
 			TweenService:Create(container, TweenInfo.new(0.3, Enum.EasingStyle.Quad), {
 				Size = targetSize
 			}):Play()
 			
-			-- Show options frame with a slight delay for smooth animation
 			if toggled then
 				delay(0.1, function()
 					optionsFrame.Visible = true
@@ -439,7 +410,6 @@ local function createToggle(name, callback, hasOptions)
 		end
 	end)
 	
-	-- Hover effect for button
 	toggleButton.MouseEnter:Connect(function()
 		TweenService:Create(container, TweenInfo.new(0.2), {
 			BackgroundColor3 = Color3.fromRGB(50, 50, 50)
@@ -465,7 +435,6 @@ local function createToggle(name, callback, hasOptions)
 	}
 end
 
--- Create toggles with improved functionality
 local originalWalkSpeed = humanoid.WalkSpeed
 
 createToggle("Speed Boost", function(state, speed)
@@ -476,7 +445,6 @@ createToggle("Speed Boost", function(state, speed)
 	end
 end, true)
 
--- Improved fly module that responds to WASD and works based on camera direction
 local flyConnection, flyVelocity
 createToggle("Fly", function(state, flySpeed)
 	local root = character:WaitForChild("HumanoidRootPart")
@@ -491,7 +459,6 @@ createToggle("Fly", function(state, flySpeed)
 			local moveDirection = Vector3.new(0, 0, 0)
 			local camera = workspace.CurrentCamera
 			
-			-- Forward/backward movement based on camera direction
 			if UserInputService:IsKeyDown(Enum.KeyCode.W) then
 				moveDirection = moveDirection + camera.CFrame.LookVector
 			end
@@ -499,7 +466,6 @@ createToggle("Fly", function(state, flySpeed)
 				moveDirection = moveDirection - camera.CFrame.LookVector
 			end
 			
-			-- Left/right movement based on camera right vector
 			if UserInputService:IsKeyDown(Enum.KeyCode.A) then
 				moveDirection = moveDirection - camera.CFrame.RightVector
 			end
@@ -507,7 +473,6 @@ createToggle("Fly", function(state, flySpeed)
 				moveDirection = moveDirection + camera.CFrame.RightVector
 			end
 			
-			-- Up/down movement
 			if UserInputService:IsKeyDown(Enum.KeyCode.Space) then
 				moveDirection = moveDirection + Vector3.new(0, 1, 0)
 			end
@@ -515,7 +480,6 @@ createToggle("Fly", function(state, flySpeed)
 				moveDirection = moveDirection - Vector3.new(0, 1, 0)
 			end
 			
-			-- Normalize and apply speed
 			if moveDirection.Magnitude > 0 then
 				moveDirection = moveDirection.Unit
 			end
@@ -523,18 +487,16 @@ createToggle("Fly", function(state, flySpeed)
 			flyVelocity.Velocity = moveDirection * (flySpeed or 60)
 		end)
 		
-		-- Disable standard character control
 		humanoid.PlatformStand = true
 	else
 		if flyConnection then flyConnection:Disconnect() end
 		if flyVelocity then flyVelocity:Destroy() end
 		
-		-- Re-enable standard character control
 		humanoid.PlatformStand = false
 	end
 end, true)
 
-local derpConnection = nil -- persists between toggle calls
+local derpConnection = nil 
 
 createToggle("Derp", function(state, derpSpeed)
     local player = game.Players.LocalPlayer
@@ -542,20 +504,18 @@ createToggle("Derp", function(state, derpSpeed)
     local root = character:WaitForChild("HumanoidRootPart")
 
     if state then
-        -- Disconnect existing connection if any (just to be safe)
+   
         if derpConnection then
             derpConnection:Disconnect()
             derpConnection = nil
         end
 
-        -- Start spinning using Heartbeat
         derpConnection = game:GetService("RunService").Heartbeat:Connect(function(deltaTime)
             local rotationSpeed = derpSpeed * 1000 or 26
             local rotationAmount = math.rad(rotationSpeed * deltaTime)
             root.CFrame = root.CFrame * CFrame.Angles(0, rotationAmount, 0)
         end)
     else
-        -- Stop spinning
         if derpConnection then
             derpConnection:Disconnect()
             derpConnection = nil
@@ -582,7 +542,6 @@ function createUIESP(player)
         billboard.StudsOffset = Vector3.new(0, 3, 0)
         billboard.Parent = hrp
 
-        -- Box Frame
         local box = Instance.new("Frame")
         box.Size = UDim2.new(1, 0, 1, 0)
         box.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
@@ -591,9 +550,6 @@ function createUIESP(player)
         box.BorderColor3 = Color3.new(1, 1, 1)
         box.Parent = billboard
         
-        
-
-        -- Name label
         local nameLabel = Instance.new("TextLabel")
         nameLabel.Size = UDim2.new(1, 0, 0.2, 0)
         nameLabel.Position = UDim2.new(0, 0, -0.2, 0)
@@ -608,12 +564,10 @@ function createUIESP(player)
         espGuiMap[player] = billboard
     end
 
-    -- Handle existing characters
     if player.Character then
         attachESPToCharacter(player.Character)
     end
 
-    -- Listen for character respawns
     charAddedConnections[player] = player.CharacterAdded:Connect(function(char)
         task.wait(1)
         attachESPToCharacter(char)
@@ -662,11 +616,10 @@ local camera = workspace.CurrentCamera
 
 local rightMouseHeld = false
 
--- CONFIG
+--CONFIG
 local FOV_RADIUS = 150
 local SMOOTHNESS = 0.2
 
--- Input check for RMB
 userInputService.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton2 then
         rightMouseHeld = true
@@ -679,7 +632,6 @@ userInputService.InputEnded:Connect(function(input)
     end
 end)
 
--- Get closest valid target
 local function getClosestTarget()
     local closest = nil
     local shortestDist = math.huge
@@ -705,7 +657,6 @@ local function getClosestTarget()
     return closest
 end
 
--- Smooth aiming
 local function aimAt(target)
     local camPos = camera.CFrame.Position
     local dir = (target.Position - camPos).Unit
@@ -714,7 +665,6 @@ local function aimAt(target)
     camera.CFrame = camera.CFrame:Lerp(goalCFrame, SMOOTHNESS)
 end
 
--- Aimbot loop
 local function startAimbot()
     aimbotRunning = true
     runService:BindToRenderStep("Aimbot", Enum.RenderPriority.Camera.Value + 1, function()
@@ -732,7 +682,6 @@ local function stopAimbot()
     runService:UnbindFromRenderStep("Aimbot")
 end
 
--- Toggle hook
 createToggle("Aimbot", function(state)
     if state then
         startAimbot()
@@ -741,11 +690,4 @@ createToggle("Aimbot", function(state)
     end
 end)
 
-
-
-
-
-
-
--- Return the GUI to allow for future updating by scripts
 return screenGui
