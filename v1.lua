@@ -539,7 +539,7 @@ function createUIESP(player)
         billboard.Adornee = hrp
         billboard.AlwaysOnTop = true
         billboard.Size = UDim2.new(4, 0, 6, 0)
-        billboard.StudsOffset = Vector3.new(0, 3, 0)
+        billboard.StudsOffset = Vector3.new(0, 0, 0)
         billboard.Parent = hrp
 
         local box = Instance.new("Frame")
